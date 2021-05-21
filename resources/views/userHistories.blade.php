@@ -8,9 +8,9 @@
     <title>Document</title>
 </head>
 <body>
-@if(!empty($histories))
+@if(!empty($histories['result']))
     <h1>Транзакции пользователей</h1>
-    @foreach($histories as $history)
+    @foreach($histories['result'] as $history)
         <ul>
             <li>ID: {{$history['id']}}"></li>
             <li>ID Пользователя: {{$history['user_id']}}"></li>

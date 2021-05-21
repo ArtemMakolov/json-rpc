@@ -23,7 +23,7 @@ class SiteController extends Controller
             'user_id' => $id,
         ]);
 
-        return view('userBalance', ['history' => $data['result']]);
+        return view('userBalance', ['history' => $data]);
     }
 
     public function getHistories(Request $request)
@@ -32,6 +32,6 @@ class SiteController extends Controller
             'limit' => 50,
         ]);
 
-        return view('userHistories', ['histories' => $data['result']]);
+        return view('userHistories', ['histories' => $data]);
     }
 }

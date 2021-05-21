@@ -8,12 +8,12 @@
     <title>Document</title>
 </head>
 <body>
-    @if(isset($history['id']))
+    @if(isset($history['result']['id']))
         <h1>Баланс пользователя</h1>
         <ul>
-            <li>ID: {{$history['id']}}</li>
-            <li>Баланс: {{$history['balance']}}</li>
-            <li>Дата: {{$history['created_at']}}</li>
+            <li>ID: {{$history['result']['id']}}</li>
+            <li>Баланс: {{$history['result']['balance']}}</li>
+            <li>Дата: {{$history['result']['created_at']}}</li>
         </ul>
     @else
         <h1>Пусто :(</h1>
