@@ -10,5 +10,5 @@
 7. http://localhost:28592/user/histories
 8. http://localhost:28592/user/balance/{id} id от 1 до 5
 
-В app/Components/JsonRpc классы клиента и сервера 
-BalanceController - в роли серверного приложения
+1. В app/Components/JsonRpc классы клиента и сервера 
+2. BalanceController - в роли серверного приложения
