@@ -1,0 +1,47 @@
+FROM php:8.0.0-fpm-alpine as base
+
+ENV XDEBUG_VERSION="3.0.1" IS_CLI=false IS_ALPINE=true
+
+RUN echo "@edge http://dl-cdn.alpinelinux.org/alpine/edge/main" >> /etc/apk/repositories \
+ && echo "@edgecommunity http://dl-cdn.alpinelinux.org/alpine/edge/community" >> /etc/apk/repositories \
+ && echo /etc/apk/respositories \
+ && apk update && apk add --no-cache bash wget git build-base autoconf pcre-dev gcc g++ \
+ freetype-dev libjpeg-turbo-dev libpng-dev
+
+RUN mkdir /tmp/debug \
+    && chmod -R 777 /tmp/debug \
+    && git clone -b $XDEBUG_VERSION --depth 1 https://github.com/xdebug/xdebug.git /usr/src/php/ext/xdebug \
+    && docker-php-ext-configure xdebug --enable-xdebug-dev \
+    && docker-php-ext-install xdebug
+
+RUN set -ex && apk add --no-cache postgresql-dev libzip-dev icu-dev oniguruma-dev $PHPIZE_DEPS \
+    && docker-php-ext-install pdo_pgsql bcmath gd sockets pcntl zip intl
+
+RUN pecl install redis mongodb && docker-php-ext-enable redis mongodb\
+    && rm -rf /var/cache/apk/*
+
+# Install composer
+ENV COMPOSER_ALLOW_SUPERUSER=1 COMPOSER_HOME=/tmp
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer clear-cache && rm -rf /tmp/composer-setup.php /tmp/.htaccess
+
+# alias for artisan
+RUN echo '#! /bin/sh' >> /bin/art \
+    && echo '/usr/local/bin/php /app/artisan "$@"' >> /bin/art \
+    && chmod +x /bin/art
+
+#RUN crontab -u www-data -l | { cat; echo "* * * * * php /app/artisan schedule:run"; } | crontab -
+
+FROM base AS app
+
+ARG UID
+ARG GID
+ENV UID=${UID:-1000} GID=${GID:-1000}
+
+RUN addgroup -g $GID appgroup && adduser -D -u $UID -G appgroup appuser && addgroup appuser www-data
+
+USER $UID
+
+WORKDIR /app
+
+CMD php-fpm
