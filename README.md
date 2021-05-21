@@ -9,6 +9,6 @@
 6. php artisan db:seed --class=BalanceHistorySeeder
 7. http://localhost:28592/user/histories
 8. http://localhost:28592/user/balance/{id} id от 1 до 5
-
+####
 1. В app/Components/JsonRpc классы клиента и сервера 
 2. BalanceController - в роли серверного приложения
